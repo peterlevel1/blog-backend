@@ -1,24 +1,16 @@
-import { Inject, Injectable, Scope } from '@nestjs/common';
-import { Request } from 'express';
+import { Injectable } from '@nestjs/common';
 import { InjectKnex } from '@common/modules/knex';
-import { BaseRepository } from '@common/base/base.repository';
-import { REQUEST } from '@nestjs/core';
 import { Knex } from 'knex';
 import { UserEntity } from '@databases/mysql/entities';
 
-@Injectable({ scope: Scope.REQUEST })
-export class UserRepository extends BaseRepository<UserEntity> {
+@Injectable()
+export class UserRepository {
   constructor(
-    @Inject(REQUEST)
-    private readonly request: Request,
-
     @InjectKnex()
     private readonly knex: Knex,
-  ) {
-    super(request, knex, UserEntity);
-  }
+  ) {}
 
   async findOneByUsername(username: string): Promise<UserEntity> {
-    return this.knex(this.getTableName()).where('username', username).first();
+    return this.knex('user').where('username', username).first();
   }
 }
